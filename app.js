@@ -69,7 +69,7 @@ class UI {
                 button.innerText = "In Cart";
                 button.disable = true;
             }
-                button.addEventListener('click',(event)=>{
+                button.addEventListener('click',(event) => {
                     // console.log(event);
                     event.target.innerText = "In Cart";
                     event.target.disabled = true;
@@ -89,7 +89,7 @@ class UI {
                     this.setCartValues(cart);
 
                     //display cart items or add cart to the DOM
-                    this.addCartItem(cart);
+                    this.addCartItem(cartItem);
 
                     //show the cart
                     this.showCart();
@@ -105,7 +105,7 @@ class UI {
         })
         cartTotal.innerText = parseFloat(tempTotal.toFixed(2));
         cartItems.innerText = itemsTotal;
-        console.log(cartTotal,cartItems)
+        // console.log(cartTotal,cartItems)
     }
     addCartItem(item){
         const div = document.createElement('div');
@@ -127,11 +127,22 @@ class UI {
     }
 
     showCart(){
-        cartOverlay.classList.add('transparentBcg')
-        cartDOM.classList.add('showCart')
+        cartOverlay.classList.add('transparentBcg');
+        cartDOM.classList.add('showCart');
     }
     setupAPP(){
-
+        cart = Storage.getCart();
+        this.setCartValues(cart);
+        this.populateCart(cart);
+        cartBtn.addEventListener('click',this.showCart);
+        closeCartBtn.addEventListener('click',this.hideCart)
+    }
+    populateCart(cart){
+        cart.forEach(item => this.addCartItem(item));
+    }
+    hideCart(){
+        cartOverlay.classList.remove('transparentBcg');
+        cartDOM.classList.reomve('showCart');
     }
 }
 
@@ -147,17 +158,23 @@ class Storage {
     static saveCart(cart){
         localStorage.setItem('cart',JSON.stringify(cart));
     }
+    static getCart(){
+        return localStorage.getItem('cart')?JSON.parse(localStorage.getItem('cart')):[]
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
     const ui = new UI();
     const products = new Products();
 
+    //setup appl
+    ui.setupAPP();
+
     //get all products 
     products.getProducts().then(products => {
         ui.displayProducts(products)
         Storage.saveProducts(products);
-    }).then(()=>{
+    }).then(()=> {
         ui.getBagButtons();
     });
 });
