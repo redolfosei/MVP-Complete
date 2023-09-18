@@ -259,6 +259,7 @@ body {
     text-transform: capitalize;
     margin-bottom: 1rem;
   }
-  
+  .checkout-btn{
+    margin-top: 25px;
+}
   /* --------------- End of Cart ---------------- */
-  
